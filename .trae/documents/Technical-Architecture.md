@@ -1,85 +1,146 @@
-# 像素风机甲对战游戏 - 技术架构文档
+# 像素风机甲对战游戏 - 技术架构文档（局域网联机版）
 
 ## 1. 架构设计
 
 ```mermaid
 graph TB
-    subgraph 前端层
-        UI[UI渲染层<br/>HTML/CSS]
-        GAME[游戏引擎层<br/>Canvas 2D]
-        INPUT[输入处理层<br/>Keyboard Events]
+    subgraph 客户端A
+        UI_A[UI渲染层<br/>移动端触控]
+        GAME_A[游戏引擎层<br/>Canvas 2D]
+        NET_A[网络层<br/>WebSocket客户端]
+        SYNC_A[同步层<br/>帧同步]
     end
     
-    subgraph 核心逻辑层
-        SM[状态管理<br/>Game State]
-        SCENE[场景管理<br/>Scene Manager]
-        COMBAT[战斗系统<br/>Combat System]
-        ANIM[动画系统<br/>Animation System]
-        PARTICLE[粒子系统<br/>Particle System]
+    subgraph 客户端B
+        UI_B[UI渲染层<br/>移动端触控]
+        GAME_B[游戏引擎层<br/>Canvas 2D]
+        NET_B[网络层<br/>WebSocket客户端]
+        SYNC_B[同步层<br/>帧同步]
     end
     
-    subgraph 游戏实体层
-        PLAYER1[玩家1机甲]
-        PLAYER2[玩家2机甲]
-        EFFECT[特效对象]
-    end
-    
-    UI --> GAME
-    INPUT --> SM
-    GAME --> SCENE
-    SCENE --> COMBAT
-    COMBAT --> ANIM
-    ANIM --> PARTICLE
-    PARTICLE --> EFFECT
+    NET_A <-->|"局域网TCP"| NET_B
+    UI_A <--> GAME_A
+    GAME_A <--> NET_A
+    UI_B <--> GAME_B
+    GAME_B <--> NET_B
 ```
 
 ## 2. 技术选型
 
 | 类别 | 技术 | 说明 |
 |-----|------|------|
-| 核心 | 原生HTML5 + Canvas | 轻量化，无需构建工具 |
+| 前端框架 | 原生HTML5 | 跨平台，无需安装 |
 | 渲染 | Canvas 2D API | 像素-perfect渲染 |
+| 网络 | WebSocket | 实时双向通信 |
+| 信令服务 | PeerJS + WebRTC | P2P连接方案 |
 | 音频 | Web Audio API | 8-bit风格音效 |
-| 输入 | Keyboard Events | 双人键盘控制 |
+| 输入 | Touch Events | 移动端触摸 |
 
-## 3. 核心模块设计
+## 3. 网络架构
 
-### 3.1 游戏状态机
+### 3.1 P2P连接方案（推荐）
+
+使用WebRTC实现真正的P2P直连，无服务器中转：
 
 ```
+设备A <--WebRTC P2P--> 设备B
+```
+
+- **优势**：低延迟、无服务器成本
+- **实现**：使用PeerJS简化WebRTC连接过程
+
+### 3.2 连接流程
+
+```mermaid
+sequenceDiagram
+    participant A as 玩家A
+    participant P as PeerJS服务器
+    participant B as 玩家B
+    
+    Note over A: 创建房间<br/>生成唯一PeerID
+    A->>P: 注册PeerID
+    P-->>A: PeerID注册成功
+    Note over A: 显示房间地址<br/>等待连接
+    
+    B->>P: 查询PeerID
+    P-->>B: 返回已注册的PeerID
+    B->>A: 请求连接
+    A->>B: 接受连接
+    Note over A,B: P2P直连建立
+```
+
+## 4. 文件结构
+
+```
+/workspace
+├── index.html          # 单文件完整游戏
+├── SPEC.md             # 规格说明
+└── .trae/
+    └── documents/
+        ├── PRD-pixel-mecha-battle.md
+        └── Technical-Architecture.md
+```
+
+## 5. 核心模块设计
+
+### 5.1 游戏状态机
+
+```javascript
 GameState: 'menu' | 'select' | 'battle' | 'result'
 ```
 
 | 状态 | 进入条件 | 退出条件 |
 |-----|---------|---------|
 | menu | 游戏启动 | 点击开始 |
-| select | menu结束 | 双方选择完成 |
+| select | 双方连接成功 | 双方选择完成 |
 | battle | select结束 | 某方血量归零 |
 | result | battle结束 | 点击重新开始 |
 
-### 3.2 机甲实体结构
+### 5.2 机甲实体结构
 
-```typescript
+```javascript
 interface Mecha {
-    x: number;           // X坐标
-    y: number;           // Y坐标
-    width: number;       // 宽度
-    height: number;      // 高度
-    hp: number;          // 当前血量
-    maxHp: number;       // 最大血量
-    energy: number;      // 当前能量
-    maxEnergy: number;   // 最大能量
-    speed: number;       // 移动速度
-    facing: 'left'|'right'; // 朝向
+    id: string;              // 玩家ID
+    x: number;               // X坐标
+    y: number;               // Y坐标
+    width: number;           // 宽度
+    height: number;          // 高度
+    hp: number;              // 当前血量
+    maxHp: number;           // 最大血量
+    energy: number;          // 当前能量
+    maxEnergy: number;       // 最大能量
+    speed: number;           // 移动速度
+    facing: 'left'|'right';  // 朝向
     state: 'idle'|'walk'|'attack'|'defend'|'hit'|'ultimate'; // 状态
-    animFrame: number;   // 动画帧
-    animTimer: number;   // 动画计时器
-    attackCooldown: number; // 攻击冷却
-    invincible: boolean; // 无敌状态
+    animFrame: number;       // 动画帧
+    animTimer: number;       // 动画计时器
+    attackCooldown: number;  // 攻击冷却
+    invincible: boolean;     // 无敌状态
 }
 ```
 
-### 3.3 战斗系统
+### 5.3 网络同步协议
+
+```javascript
+// 输入命令结构
+interface InputCommand {
+    playerId: string;
+    timestamp: number;
+    direction: { x: number; y: number };
+    attack: boolean;
+    defend: boolean;
+    ultimate: boolean;
+}
+
+// 游戏事件结构
+interface GameEvent {
+    type: 'hit' | 'damage' | 'sync' | 'end';
+    data: any;
+    timestamp: number;
+}
+```
+
+### 5.4 战斗系统
 
 ```javascript
 // 伤害计算
@@ -95,19 +156,37 @@ function regenerateEnergy(mecha) {
 }
 ```
 
-## 4. 文件结构
+## 6. 移动端触摸控制
 
-```
-/workspace
-├── index.html          # 主入口
-├── SPEC.md             # 规格说明
-└── .trae/
-    └── documents/
-        ├── PRD-pixel-mecha-battle.md
-        └── Technical-Architecture.md
+### 6.1 虚拟摇杆
+
+```javascript
+// 左侧40%屏幕区域
+class VirtualJoystick {
+    touchId: number;
+    baseX: number;
+    baseY: number;
+    knobX: number;
+    knobY: number;
+    direction: { x: number; y: number };
+    
+    handleTouchStart(e) { ... }
+    handleTouchMove(e) { ... }
+    handleTouchEnd(e) { ... }
+    getDirection() { return this.direction; }
+}
 ```
 
-## 5. 像素渲染策略
+### 6.2 技能按钮
+
+```javascript
+// 右侧40%屏幕区域
+// 攻击按钮 - 大圆形，半透明
+// 防御按钮 - 小方形，半透明
+// 大招按钮 - 特殊样式，闪烁效果
+```
+
+## 7. 像素渲染策略
 
 ```javascript
 // 像素-perfect渲染设置
@@ -117,75 +196,31 @@ ctx.imageSmoothingEnabled = false;
 const LOGICAL_WIDTH = 320;
 const LOGICAL_HEIGHT = 180;
 
-// 显示缩放
-const SCALE = 3;
-
-// 渲染时缩放
-ctx.scale(SCALE, SCALE);
+// 触摸按钮透明度
+const BUTTON_ALPHA = 0.3;
 ```
 
-## 6. 粒子系统设计
+## 8. PeerJS集成
 
-```javascript
-class Particle {
-    constructor(x, y, color) {
-        this.x = x;
-        this.y = y;
-        this.vx = (Math.random() - 0.5) * 4;
-        this.vy = (Math.random() - 0.5) * 4 - 2;
-        this.life = 30;
-        this.color = color;
-        this.size = 2;
-    }
-    
-    update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.vy += 0.2; // 重力
-        this.life--;
-    }
-    
-    draw(ctx) {
-        ctx.fillStyle = this.color;
-        ctx.fillRect(Math.floor(this.x), Math.floor(this.y), this.size, this.size);
-    }
-}
+```html
+<script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 ```
 
-## 7. 音效系统
-
-使用Web Audio API合成8-bit风格音效：
-
-- **攻击音效**：短促的方波
-- **命中音效**：噪声爆发
-- **防御音效**：低频嗡鸣
-- **大招音效**：多音调叠加
-- **胜利音效**：上行旋律
-
-## 8. 输入处理
-
 ```javascript
-// 键盘映射
-const CONTROLS = {
-    player1: {
-        up: 'KeyW',
-        down: 'KeyS',
-        left: 'KeyA',
-        right: 'KeyD',
-        attack: 'KeyJ',
-        defend: 'KeyK',
-        ultimate: 'KeyU'
-    },
-    player2: {
-        up: 'ArrowUp',
-        down: 'ArrowDown',
-        left: 'ArrowLeft',
-        right: 'ArrowRight',
-        attack: 'Numpad1',
-        defend: 'Numpad2',
-        ultimate: 'Numpad3'
-    }
-};
+// 创建连接
+const peer = new Peer('unique-room-id');
+
+// 监听连接
+peer.on('connection', (conn) => {
+    conn.on('data', handleGameData);
+    conn.on('open', () => console.log('Connected!'));
+});
+
+// 连接到房间
+const conn = peer.connect('target-peer-id');
+conn.on('open', () => {
+    conn.send({ type: 'ready' });
+});
 ```
 
 ## 9. 性能优化
@@ -194,3 +229,13 @@ const CONTROLS = {
 - 粒子池化复用
 - 离屏Canvas预渲染静态元素
 - 避免运行时对象创建
+- 触摸事件节流（16ms）
+
+## 10. 错误处理
+
+| 场景 | 处理方案 |
+|-----|---------|
+| 连接超时 | 显示重试按钮 |
+| 连接断开 | 显示断线提示，返回主界面 |
+| 同步失败 | 本地回滚到最后一致状态 |
+| 触摸不支持 | 提示使用支持触摸的设备 |
