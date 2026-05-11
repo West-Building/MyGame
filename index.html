@@ -38,41 +38,51 @@
         .touchControl {
             position: absolute;
             pointer-events: none;
+            display: none;
+        }
+        .touchControl.active {
+            display: block;
         }
         #joystickArea {
             left: 0;
             bottom: 0;
-            width: 40%;
-            height: 50%;
+            width: 50%;
+            height: 40%;
         }
         #buttonArea {
             right: 0;
             bottom: 0;
-            width: 40%;
-            height: 50%;
+            width: 50%;
+            height: 40%;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
             align-items: flex-end;
-            padding: 10px;
-            gap: 10px;
+            padding: 5%;
+            gap: 8px;
         }
         .joystick {
             position: absolute;
-            width: 120px;
-            height: 120px;
+            width: 28vw;
+            height: 28vw;
+            max-width: 120px;
+            max-height: 120px;
+            min-width: 80px;
+            min-height: 80px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.15);
-            border: 3px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.12);
+            border: 3px solid rgba(255,255,255,0.25);
             pointer-events: auto;
             touch-action: none;
+            left: 5%;
+            bottom: 5%;
         }
         .joystickKnob {
             position: absolute;
-            width: 50px;
-            height: 50px;
+            width: 40%;
+            height: 40%;
             border-radius: 50%;
-            background: rgba(255,255,255,0.4);
+            background: rgba(255,255,255,0.35);
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -84,42 +94,55 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 12px;
+            font-size: clamp(10px, 3vw, 16px);
             font-weight: bold;
             color: white;
             text-shadow: 1px 1px 2px black;
-            border: 3px solid rgba(255,255,255,0.5);
-            transition: transform 0.1s;
+            border: 3px solid rgba(255,255,255,0.4);
+            transition: transform 0.05s;
         }
-        .skillButton:active {
+        .skillButton:active, .skillButton.pressed {
             transform: scale(0.9);
+            opacity: 0.8;
         }
         #attackBtn {
-            width: 80px;
-            height: 80px;
+            width: 18vw;
+            height: 18vw;
+            max-width: 75px;
+            max-height: 75px;
+            min-width: 55px;
+            min-height: 55px;
             border-radius: 50%;
-            background: rgba(230, 57, 70, 0.6);
+            background: rgba(230, 57, 70, 0.55);
         }
         #defendBtn {
-            width: 55px;
-            height: 55px;
+            width: 13vw;
+            height: 13vw;
+            max-width: 55px;
+            max-height: 55px;
+            min-width: 40px;
+            min-height: 40px;
             border-radius: 8px;
-            background: rgba(67, 97, 238, 0.6);
+            background: rgba(67, 97, 238, 0.55);
         }
         #ultimateBtn {
-            width: 65px;
-            height: 65px;
+            width: 15vw;
+            height: 15vw;
+            max-width: 65px;
+            max-height: 65px;
+            min-width: 50px;
+            min-height: 50px;
             border-radius: 50%;
-            background: rgba(244, 162, 97, 0.6);
+            background: rgba(244, 162, 97, 0.55);
             animation: ultimatePulse 0.8s infinite;
         }
         @keyframes ultimatePulse {
-            0%, 100% { box-shadow: 0 0 10px rgba(255,209,102,0.5); }
-            50% { box-shadow: 0 0 25px rgba(255,209,102,0.9); }
+            0%, 100% { box-shadow: 0 0 10px rgba(255,209,102,0.4); }
+            50% { box-shadow: 0 0 20px rgba(255,209,102,0.8); }
         }
         .buttonRow {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: flex-end;
         }
         #connectionOverlay {
@@ -128,7 +151,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(26, 26, 46, 0.95);
+            background: rgba(26, 26, 46, 0.97);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -137,19 +160,26 @@
             color: #f1faee;
             padding: 20px;
             text-align: center;
+            overflow-y: auto;
         }
         .hidden { display: none !important; }
+        .overlay-content {
+            width: 100%;
+            max-width: 400px;
+        }
         .btn {
-            padding: 15px 30px;
-            font-size: 18px;
+            padding: 14px 28px;
+            font-size: clamp(14px, 4vw, 18px);
             font-family: monospace;
             background: #4361ee;
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            margin: 10px;
-            min-width: 200px;
+            margin: 8px;
+            min-width: 180px;
+            width: 80%;
+            max-width: 280px;
         }
         .btn:hover { background: #3a56d4; }
         .btn:active { transform: scale(0.95); }
@@ -157,33 +187,55 @@
         .btn.red:hover { background: #d62839; }
         .btn.green { background: #2ec4b6; }
         .btn.green:hover { background: #25a89d; }
+        .btn.orange { background: #f4a261; }
+        .btn.orange:hover { background: #e8934d; }
         .roomInfo {
-            background: rgba(255,255,255,0.1);
-            padding: 20px;
+            background: rgba(255,255,255,0.08);
+            padding: 15px;
             border-radius: 10px;
-            margin: 20px 0;
+            margin: 15px 0;
             word-break: break-all;
         }
         .roomCode {
-            font-size: 24px;
+            font-size: clamp(20px, 6vw, 28px);
             color: #ffd166;
             margin: 10px 0;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
         input {
-            padding: 15px;
+            padding: 12px;
             font-size: 16px;
             font-family: monospace;
             background: rgba(255,255,255,0.1);
             border: 2px solid rgba(255,255,255,0.3);
             border-radius: 8px;
             color: white;
-            width: 250px;
+            width: 80%;
+            max-width: 260px;
             text-align: center;
+            margin: 5px 0;
         }
-        input::placeholder { color: rgba(255,255,255,0.5); }
-        .status { color: #f4a261; margin: 10px 0; }
+        input::placeholder { color: rgba(255,255,255,0.4); }
+        .status { color: #f4a261; margin: 10px 0; font-size: clamp(12px, 3vw, 14px); }
         .error { color: #e63946; }
+        .title {
+            font-size: clamp(22px, 7vw, 32px);
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #888;
+            margin-bottom: 25px;
+            font-size: clamp(12px, 3vw, 14px);
+        }
+        .difficulty-info {
+            font-size: clamp(11px, 2.8vw, 13px);
+            color: #aaa;
+            margin: 5px 0;
+        }
+        @media (max-width: 480px) {
+            .touchControl { pointer-events: auto; }
+            .touchControl.active { display: block; }
+        }
     </style>
 </head>
 <body>
@@ -208,38 +260,48 @@
     </div>
 
     <div id="connectionOverlay">
-        <h1 style="font-size: 28px; margin-bottom: 10px;">⚔️ 像素风机甲对战 ⚔️</h1>
-        <p style="color: #aaa; margin-bottom: 30px;">局域网联机 | 移动端适配</p>
-        
-        <div id="menuSection">
-            <button class="btn" onclick="startPractice()">🎮 单人练习</button>
+        <div class="overlay-content" id="menuSection">
+            <h1 class="title">⚔️ 机甲对战 ⚔️</h1>
+            <p class="subtitle">局域网联机 | 移动端适配</p>
+            
+            <button class="btn" onclick="showPracticeMenu()">🎮 单人练习</button>
+            <button class="btn" onclick="showLocalPVP()">⌨️ 本地双人对战</button>
             <button class="btn" onclick="showMultiplayerMenu()">📡 局域网对战</button>
         </div>
         
-        <div id="multiplayerSection" class="hidden">
-            <button class="btn" onclick="createRoom()">🏠 创建房间</button>
-            <button class="btn" onclick="showJoinRoom()">🔍 加入房间</button>
-            <button class="btn green" onclick="showMenu()">← 返回</button>
+        <div class="overlay-content hidden" id="practiceSection">
+            <h2 style="margin-bottom: 15px;">选择难度</h2>
+            <button class="btn green" onclick="startPractice('easy')">🌱 简单</button>
+            <p class="difficulty-info">AI反应较慢，适合新手练习</p>
+            <button class="btn orange" onclick="startPractice('hard')">🔥 困难</button>
+            <p class="difficulty-info">AI反应迅速，需要策略性操作</p>
+            <button class="btn red" onclick="returnToMain()" style="margin-top: 15px;">← 返回</button>
         </div>
         
-        <div id="createRoomSection" class="hidden">
+        <div class="overlay-content hidden" id="multiplayerSection">
+            <button class="btn" onclick="createRoom()">🏠 创建房间</button>
+            <button class="btn" onclick="showJoinRoom()">🔍 加入房间</button>
+            <button class="btn red" onclick="returnToMain()">← 返回</button>
+        </div>
+        
+        <div class="overlay-content hidden" id="createRoomSection">
             <h2>房间已创建</h2>
             <p>分享房间码给好友：</p>
             <div class="roomInfo">
-                <div class="roomCode" id="roomCodeDisplay">等待生成...</div>
+                <div class="roomCode" id="roomCodeDisplay">...</div>
                 <p style="font-size: 12px; color: #aaa;">等待对方加入...</p>
             </div>
             <div class="status" id="waitingStatus"></div>
             <button class="btn red" onclick="cancelRoom()">取消</button>
         </div>
         
-        <div id="joinRoomSection" class="hidden">
+        <div class="overlay-content hidden" id="joinRoomSection">
             <h2>加入房间</h2>
             <p>输入好友的房间码：</p>
-            <input type="text" id="roomCodeInput" placeholder="输入房间码...">
+            <input type="text" id="roomCodeInput" placeholder="输入房间码..." maxlength="6">
             <button class="btn green" onclick="joinRoom()">连接</button>
             <div class="status" id="joinStatus"></div>
-            <button class="btn red" onclick="showMultiplayerMenu()">取消</button>
+            <button class="btn red" onclick="cancelJoin()">取消</button>
         </div>
     </div>
 
@@ -253,6 +315,9 @@ let SCALE = 3;
 
 let gameState = 'menu';
 let isOnline = false;
+let isLocalPVP = false;
+let isPractice = false;
+let aiDifficulty = 'easy';
 let isHost = false;
 let peer = null;
 let conn = null;
@@ -295,25 +360,15 @@ let remoteMecha = null;
 let localSelection = null;
 let remoteSelection = null;
 
-let particles = [];
-let screenShake = 0;
-let battleStartTime = 0;
-
-const input = {
-    direction: { x: 0, y: 0 },
-    attack: false,
-    defend: false,
-    ultimate: false,
-    attackPressed: false,
-    defendPressed: false,
-    ultimatePressed: false
-};
+let p1Input = { direction: { x: 0, y: 0 }, attack: false, defend: false, ultimate: false, attackPressed: false, defendPressed: false, ultimatePressed: false };
+let p2Input = { direction: { x: 0, y: 0 }, attack: false, defend: false, ultimate: false, attackPressed: false, defendPressed: false, ultimatePressed: false };
 
 const keys = {};
 
-let joystick = null;
-let joystickTouchId = null;
-let joystickBase = { x: 0, y: 0 };
+let particles = [];
+let screenShake = 0;
+
+let isTouchDevice = false;
 
 function initCanvas() {
     const container = document.getElementById('gameContainer');
@@ -342,25 +397,15 @@ function initCanvas() {
 }
 
 function handleClick(e) {
-    if (gameState === 'menu') {
+    if (gameState === 'select') {
         const rect = canvas.getBoundingClientRect();
         const x = (e.clientX - rect.left) / SCALE;
         const y = (e.clientY - rect.top) / SCALE;
         
-        if (y > 100 && y < 130) {
-            if (x > 80 && x < 160) {
-                startPractice();
-            }
-        }
-    } else if (gameState === 'select') {
-        const rect = canvas.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / SCALE;
-        const y = (e.clientY - rect.top) / SCALE;
-        
-        if (y > 80 && y < 130) {
-            if (x > 60 && x < 150) {
+        if (y > 80 && y < 135) {
+            if (x > 60 && x < 155) {
                 selectMecha('flame');
-            } else if (x > 170 && x < 260) {
+            } else if (x > 165 && x < 260) {
                 selectMecha('frost');
             }
         }
@@ -369,7 +414,7 @@ function handleClick(e) {
         const x = (e.clientX - rect.left) / SCALE;
         const y = (e.clientY - rect.top) / SCALE;
         
-        if (y > 130 && y < 155) {
+        if (y > 130 && y < 158) {
             if (x > 100 && x < 160) {
                 restartGame();
             } else if (x > 170 && x < 250) {
@@ -418,15 +463,11 @@ function updateMecha(mecha, dt) {
     }
     
     if (mecha.state === 'hit') {
-        if (mecha.hitTimer <= 0) {
-            mecha.state = 'idle';
-        }
+        if (mecha.hitTimer <= 0) mecha.state = 'idle';
     }
     
     if (mecha.state === 'attack' || mecha.state === 'ultimate') {
-        if (mecha.attackTimer <= 0) {
-            mecha.state = 'idle';
-        }
+        if (mecha.attackTimer <= 0) mecha.state = 'idle';
     }
     
     mecha.animTimer += dt;
@@ -436,16 +477,14 @@ function updateMecha(mecha, dt) {
     }
 }
 
-function updateMechaFromInput(mecha, dt) {
-    if (!mecha || !mecha.isLocal) return;
+function updateMechaFromInput(mecha, inputObj, dt) {
+    if (!mecha) return;
     
-    const dir = input.direction;
+    const dir = inputObj.direction;
     let moving = false;
     
     if (dir.x !== 0 || dir.y !== 0) {
-        let moveX = dir.x * mecha.speed;
-        
-        mecha.x += moveX;
+        mecha.x += dir.x * mecha.speed;
         mecha.x = Math.max(10, Math.min(LOGICAL_WIDTH - 34, mecha.x));
         
         if (dir.x > 0) mecha.facing = 'right';
@@ -457,25 +496,23 @@ function updateMechaFromInput(mecha, dt) {
         moving = true;
     }
     
-    if (!moving && mecha.state === 'walk') {
-        mecha.state = 'idle';
-    }
+    if (!moving && mecha.state === 'walk') mecha.state = 'idle';
     
-    if (input.attack && !input.attackPressed && mecha.attackTimer <= 0) {
+    if (inputObj.attack && !inputObj.attackPressed && mecha.attackTimer <= 0) {
         performAttack(mecha);
-        input.attackPressed = true;
+        inputObj.attackPressed = true;
     }
-    if (!input.attack) input.attackPressed = false;
+    if (!inputObj.attack) inputObj.attackPressed = false;
     
-    if (input.ultimate && !input.ultimatePressed && mecha.energy >= 100 && mecha.attackTimer <= 0) {
+    if (inputObj.ultimate && !inputObj.ultimatePressed && mecha.energy >= 100 && mecha.attackTimer <= 0) {
         performUltimate(mecha);
-        input.ultimatePressed = true;
+        inputObj.ultimatePressed = true;
     }
-    if (!input.ultimate) input.ultimatePressed = false;
+    if (!inputObj.ultimate) inputObj.ultimatePressed = false;
     
-    if (input.defend && mecha.state !== 'attack' && mecha.state !== 'ultimate') {
+    if (inputObj.defend && mecha.state !== 'attack' && mecha.state !== 'ultimate') {
         mecha.state = 'defend';
-    } else if (mecha.state === 'defend' && !input.defend) {
+    } else if (mecha.state === 'defend' && !inputObj.defend) {
         mecha.state = 'idle';
     }
     
@@ -485,15 +522,6 @@ function updateMechaFromInput(mecha, dt) {
 function performAttack(mecha) {
     mecha.state = 'attack';
     mecha.attackTimer = 300;
-    
-    if (isOnline && mecha.isLocal && conn) {
-        conn.send({ type: 'attack', mechaType: mecha.type, x: mecha.x, facing: mecha.facing, timestamp: Date.now() });
-    }
-    
-    if (isOnline && !mecha.isLocal) {
-        return;
-    }
-    
     checkAttackHit(mecha);
 }
 
@@ -502,17 +530,7 @@ function performUltimate(mecha) {
     mecha.attackTimer = 500;
     mecha.energy = 0;
     screenShake = 15;
-    
     createUltimateEffect(mecha);
-    
-    if (isOnline && mecha.isLocal && conn) {
-        conn.send({ type: 'ultimate', mechaType: mecha.type, x: mecha.x, facing: mecha.facing, timestamp: Date.now() });
-    }
-    
-    if (isOnline && !mecha.isLocal) {
-        return;
-    }
-    
     checkUltimateHit(mecha);
 }
 
@@ -532,7 +550,6 @@ function checkAttackHit(attacker) {
             damage = Math.floor(damage * 0.3);
             createDefendEffect(target);
         }
-        
         applyDamage(target, damage, attacker);
     }
 }
@@ -542,7 +559,6 @@ function checkUltimateHit(attacker) {
     if (!target) return;
     
     const range = 100;
-    
     let dx = target.x - attacker.x;
     if (attacker.facing === 'left') dx = attacker.x - target.x;
     
@@ -552,7 +568,6 @@ function checkUltimateHit(attacker) {
             damage = Math.floor(damage * 0.3);
             createDefendEffect(target);
         }
-        
         applyDamage(target, damage, attacker);
     }
 }
@@ -604,7 +619,7 @@ function createDefendEffect(mecha) {
             vy: (Math.random() - 0.5) * 3,
             life: 15,
             maxLife: 15,
-            color: '#4361ee',
+            color: '#748ffc',
             size: 3
         });
     }
@@ -632,10 +647,7 @@ function updateParticles(dt) {
         p.y += p.vy;
         p.vy += 0.15;
         p.life--;
-        
-        if (p.life <= 0) {
-            particles.splice(i, 1);
-        }
+        if (p.life <= 0) particles.splice(i, 1);
     }
 }
 
@@ -651,9 +663,7 @@ function drawMecha(mecha) {
     const x = Math.floor(mecha.x);
     const y = Math.floor(mecha.y);
     
-    if (mecha.invincible && Math.floor(Date.now() / 50) % 2 === 0) {
-        return;
-    }
+    if (mecha.invincible && Math.floor(Date.now() / 50) % 2 === 0) return;
     
     ctx.save();
     if (mecha.facing === 'left') {
@@ -676,7 +686,7 @@ function drawMecha(mecha) {
     drawPixelRect(x + 14, y + 26 + bodyOffset, 6, 8, template.color);
     
     if (mecha.state === 'attack') {
-        drawPixelRect(x + 22, y + 14, 8, 6, template.accent || '#ffd166');
+        drawPixelRect(x + 22, y + 14, 8, 6, '#ffd166');
     }
     
     if (mecha.state === 'ultimate') {
@@ -755,31 +765,25 @@ function drawHealthBars() {
     }
 }
 
-function drawMenu() {
+function drawBattle() {
+    ctx.save();
+    
+    if (screenShake > 0) {
+        ctx.translate(
+            (Math.random() - 0.5) * screenShake * SCALE,
+            (Math.random() - 0.5) * screenShake * SCALE
+        );
+        screenShake *= 0.9;
+        if (screenShake < 0.5) screenShake = 0;
+    }
+    
     drawBackground();
+    if (localMecha) drawMecha(localMecha);
+    if (remoteMecha) drawMecha(remoteMecha);
+    drawParticles();
+    drawHealthBars();
     
-    ctx.fillStyle = colors.accent;
-    ctx.font = `${16 * SCALE}px monospace`;
-    ctx.textAlign = 'center';
-    ctx.fillText('⚔️ 机甲对战 ⚔️', LOGICAL_WIDTH / 2 * SCALE, 50 * SCALE);
-    
-    ctx.fillStyle = colors.text;
-    ctx.font = `${6 * SCALE}px monospace`;
-    ctx.fillText('像素风格', LOGICAL_WIDTH / 2 * SCALE, 65 * SCALE);
-    
-    ctx.fillStyle = colors.p1Color;
-    ctx.font = `${8 * SCALE}px monospace`;
-    ctx.fillText('[ 单人练习 ]', 120 * SCALE, 115 * SCALE);
-    
-    ctx.fillStyle = colors.p2Color;
-    ctx.fillText('[ 局域网对战 ]', 200 * SCALE, 115 * SCALE);
-    
-    ctx.fillStyle = '#666';
-    ctx.font = `${5 * SCALE}px monospace`;
-    ctx.fillText('移动端：左侧摇杆移动，右侧按钮攻击', LOGICAL_WIDTH / 2 * SCALE, 165 * SCALE);
-    ctx.fillText('键盘：WASD移动，J攻击，K防御，U大招', LOGICAL_WIDTH / 2 * SCALE, 172 * SCALE);
-    
-    ctx.textAlign = 'left';
+    ctx.restore();
 }
 
 function drawSelectScreen() {
@@ -796,54 +800,25 @@ function drawSelectScreen() {
     drawMechaPreview('flame', 85, 85);
     
     ctx.fillStyle = remoteSelection ? colors.hpBar : colors.p2Color;
-    ctx.fillText(remoteSelection ? '已选择' : '等待对方...', 195 * SCALE, 75 * SCALE);
+    ctx.fillText(remoteSelection ? '已选择' : (isPractice || isLocalPVP) ? 'AI/玩家2' : '等待对方...', 195 * SCALE, 75 * SCALE);
     drawMechaPreview('frost', 175, 85);
     
     ctx.fillStyle = '#888';
     ctx.font = `${5 * SCALE}px monospace`;
-    ctx.fillText('近战·高伤害', 105 * SCALE, 130 * SCALE);
-    ctx.fillText('远程·灵活', 195 * SCALE, 130 * SCALE);
-    
-    if (isOnline && !isHost) {
-        ctx.fillStyle = colors.energyBar;
-        ctx.fillText('等待房主选择...', LOGICAL_WIDTH / 2 * SCALE, 145 * SCALE);
-    }
+    ctx.fillText('近战·高伤害', 105 * SCALE, 132 * SCALE);
+    ctx.fillText('远程·灵活', 195 * SCALE, 132 * SCALE);
     
     ctx.textAlign = 'left';
 }
 
 function drawMechaPreview(type, x, y) {
     const template = mechas[type];
-    
     drawPixelRect(x, y, 40, 48, template.color);
     drawPixelRect(x + 10, y + 10, 20, 24, template.secondaryColor);
     drawPixelRect(x + 14, y + 14, 6, 6, '#1a1a2e');
     drawPixelRect(x + 22, y + 14, 6, 6, '#1a1a2e');
     drawPixelRect(x + 8, y + 32, 10, 12, template.color);
     drawPixelRect(x + 22, y + 32, 10, 12, template.color);
-}
-
-function drawBattle() {
-    ctx.save();
-    
-    if (screenShake > 0) {
-        ctx.translate(
-            (Math.random() - 0.5) * screenShake * SCALE,
-            (Math.random() - 0.5) * screenShake * SCALE
-        );
-        screenShake *= 0.9;
-        if (screenShake < 0.5) screenShake = 0;
-    }
-    
-    drawBackground();
-    
-    if (localMecha) drawMecha(localMecha);
-    if (remoteMecha) drawMecha(remoteMecha);
-    
-    drawParticles();
-    drawHealthBars();
-    
-    ctx.restore();
 }
 
 function drawResult(won) {
@@ -866,7 +841,7 @@ function drawResult(won) {
 }
 
 let lastTime = 0;
-let aiTimer = 0;
+let aiActionTimer = 0;
 
 function gameLoop(timestamp) {
     const dt = timestamp - lastTime;
@@ -874,36 +849,34 @@ function gameLoop(timestamp) {
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    if (gameState === 'menu') {
-        drawMenu();
-    } else if (gameState === 'select') {
+    if (gameState === 'select') {
         drawSelectScreen();
-        
         if (localMecha) updateMecha(localMecha, dt);
         if (remoteMecha) updateMecha(remoteMecha, dt);
     } else if (gameState === 'battle') {
         if (localMecha) {
-            updateMechaFromInput(localMecha, dt);
+            if (isTouchDevice || isLocalPVP) {
+                updateMechaFromInput(localMecha, p1Input, dt);
+            }
             updateMecha(localMecha, dt);
         }
         
         if (remoteMecha) {
+            if (isPractice) {
+                updateAI(remoteMecha, dt);
+            } else if (isLocalPVP) {
+                updateMechaFromInput(remoteMecha, p2Input, dt);
+            }
             updateMecha(remoteMecha, dt);
         }
         
-        updateParticles(dt);
-        
-        if (isOnline && isHost) {
+        if (isOnline && isHost && remoteMecha) {
             if (Math.random() < 0.02) {
-                const dir = Math.random() < 0.5 ? -1 : 1;
-                conn.send({
-                    type: 'sync',
-                    x: remoteMecha ? remoteMecha.x : 250,
-                    state: remoteMecha ? remoteMecha.state : 'idle'
-                });
+                conn.send({ type: 'sync', x: remoteMecha.x, state: remoteMecha.state });
             }
         }
         
+        updateParticles(dt);
         drawBattle();
     } else if (gameState === 'result') {
         const won = localMecha && localMecha.hp > 0;
@@ -913,14 +886,41 @@ function gameLoop(timestamp) {
     requestAnimationFrame(gameLoop);
 }
 
-function startPractice() {
-    document.getElementById('connectionOverlay').classList.add('hidden');
-    isOnline = false;
-    gameState = 'select';
-    localSelection = null;
-    remoteSelection = 'flame';
-    localMecha = null;
-    remoteMecha = createMecha('flame', false, 250);
+function updateAI(mecha, dt) {
+    if (!mecha || !localMecha || mecha.attackTimer > 0) return;
+    
+    aiActionTimer += dt;
+    
+    const reactionTime = aiDifficulty === 'easy' ? 800 : 300;
+    const aggression = aiDifficulty === 'easy' ? 0.4 : 0.8;
+    
+    if (aiActionTimer < reactionTime) return;
+    aiActionTimer = 0;
+    
+    const dx = localMecha.x - mecha.x;
+    const distance = Math.abs(dx);
+    
+    mecha.facing = dx > 0 ? 'right' : 'left';
+    
+    if (distance > 60) {
+        mecha.x += (dx > 0 ? 1 : -1) * mecha.speed * (aiDifficulty === 'easy' ? 0.6 : 1);
+        mecha.x = Math.max(10, Math.min(LOGICAL_WIDTH - 34, mecha.x));
+        if (mecha.state !== 'attack' && mecha.state !== 'ultimate') mecha.state = 'walk';
+    }
+    
+    if (distance <= 80 && Math.random() < aggression) {
+        if (mecha.energy >= 100 && Math.random() < 0.3) {
+            performUltimate(mecha);
+        } else {
+            performAttack(mecha);
+        }
+    }
+    
+    if (localMecha.state === 'attack' || localMecha.state === 'ultimate') {
+        if (distance < 60 && Math.random() < (aiDifficulty === 'easy' ? 0.2 : 0.6)) {
+            mecha.state = 'defend';
+        }
+    }
 }
 
 function selectMecha(type) {
@@ -945,9 +945,9 @@ function startBattle() {
     localMecha = createMecha(localType, true, 50);
     remoteMecha = createMecha(remoteType, false, 250);
     
-    battleStartTime = Date.now();
     particles = [];
     screenShake = 0;
+    aiActionTimer = aiDifficulty === 'easy' ? 500 : 200;
 }
 
 function endBattle(localWon) {
@@ -969,50 +969,89 @@ function restartGame() {
     
     if (isOnline) {
         showConnectionOverlay();
+    } else if (isPractice || isLocalPVP) {
+        hideOverlay();
+        if (isPractice) {
+            remoteSelection = 'frost';
+            remoteMecha = createMecha('frost', false, 250);
+        }
     }
 }
 
 function returnToMenu() {
+    cleanup();
+    showConnectionOverlay();
+}
+
+function cleanup() {
     gameState = 'menu';
     localMecha = null;
     remoteMecha = null;
     localSelection = null;
     remoteSelection = null;
     particles = [];
-    
-    if (conn) {
-        conn.close();
-        conn = null;
-    }
-    if (peer) {
-        peer.destroy();
-        peer = null;
-    }
     isOnline = false;
+    isLocalPVP = false;
+    isPractice = false;
+    aiDifficulty = 'easy';
     
-    showConnectionOverlay();
+    p1Input = { direction: { x: 0, y: 0 }, attack: false, defend: false, ultimate: false, attackPressed: false, defendPressed: false, ultimatePressed: false };
+    p2Input = { direction: { x: 0, y: 0 }, attack: false, defend: false, ultimate: false, attackPressed: false, defendPressed: false, ultimatePressed: false };
+    
+    if (conn) { conn.close(); conn = null; }
+    if (peer) { peer.destroy(); peer = null; }
+}
+
+function hideOverlay() {
+    document.getElementById('connectionOverlay').classList.add('hidden');
 }
 
 function showConnectionOverlay() {
     const overlay = document.getElementById('connectionOverlay');
     overlay.classList.remove('hidden');
-    
-    document.getElementById('menuSection').classList.remove('hidden');
-    document.getElementById('multiplayerSection').classList.add('hidden');
-    document.getElementById('createRoomSection').classList.add('hidden');
-    document.getElementById('joinRoomSection').classList.add('hidden');
+    returnToMain();
 }
 
-function showMenu() {
+function returnToMain() {
+    hideAllSections();
     document.getElementById('menuSection').classList.remove('hidden');
-    document.getElementById('multiplayerSection').classList.add('hidden');
-    document.getElementById('createRoomSection').classList.add('hidden');
-    document.getElementById('joinRoomSection').classList.add('hidden');
+}
+
+function showPracticeMenu() {
+    hideAllSections();
+    document.getElementById('practiceSection').classList.remove('hidden');
+}
+
+function showLocalPVP() {
+    hideAllSections();
+    hideOverlay();
+    isLocalPVP = true;
+    isPractice = false;
+    isOnline = false;
+    remoteSelection = 'frost';
+    remoteMecha = createMecha('frost', false, 250);
+    gameState = 'select';
 }
 
 function showMultiplayerMenu() {
-    document.getElementById('menuSection').classList.add('hidden');
+    hideAllSections();
     document.getElementById('multiplayerSection').classList.remove('hidden');
+}
+
+function hideAllSections() {
+    const sections = ['menuSection', 'practiceSection', 'multiplayerSection', 'createRoomSection', 'joinRoomSection'];
+    sections.forEach(id => document.getElementById(id).classList.add('hidden'));
+}
+
+function startPractice(difficulty) {
+    aiDifficulty = difficulty;
+    isPractice = true;
+    isOnline = false;
+    isLocalPVP = false;
+    remoteSelection = 'frost';
+    remoteMecha = createMecha('frost', false, 250);
+    hideOverlay();
+    gameState = 'select';
 }
 
 function generateRoomCode() {
@@ -1026,19 +1065,21 @@ function generateRoomCode() {
 
 function createRoom() {
     const roomCode = generateRoomCode();
-    document.getElementById('multiplayerSection').classList.add('hidden');
+    hideAllSections();
     document.getElementById('createRoomSection').classList.remove('hidden');
     document.getElementById('roomCodeDisplay').textContent = roomCode;
     document.getElementById('waitingStatus').textContent = '正在初始化连接...';
+    document.getElementById('waitingStatus').classList.remove('error');
     
     isHost = true;
+    isOnline = true;
+    isPractice = false;
+    isLocalPVP = false;
     
-    peer = new Peer('MECHA-' + roomCode, {
-        debug: 1
-    });
+    peer = new Peer('MECHA-' + roomCode, { debug: 0 });
     
-    peer.on('open', (id) => {
-        myPlayerId = id;
+    peer.on('open', () => {
+        myPlayerId = peer.id;
         document.getElementById('waitingStatus').textContent = '等待玩家加入...\n分享房间码: ' + roomCode;
     });
     
@@ -1046,22 +1087,28 @@ function createRoom() {
         conn = connection;
         setupConnection();
         document.getElementById('waitingStatus').textContent = '玩家已连接!';
+        hideOverlay();
+        remoteSelection = 'frost';
+        remoteMecha = createMecha('frost', false, 250);
+        gameState = 'select';
     });
     
     peer.on('error', (err) => {
         document.getElementById('waitingStatus').textContent = '错误: ' + err.type;
         document.getElementById('waitingStatus').classList.add('error');
     });
-    
-    peer.on('disconnected', () => {
-        document.getElementById('waitingStatus').textContent = '连接断开';
-    });
 }
 
 function showJoinRoom() {
-    document.getElementById('multiplayerSection').classList.add('hidden');
+    hideAllSections();
     document.getElementById('joinRoomSection').classList.remove('hidden');
     document.getElementById('joinStatus').textContent = '';
+    document.getElementById('joinStatus').classList.remove('error');
+}
+
+function cancelJoin() {
+    if (peer) { peer.destroy(); peer = null; }
+    showMultiplayerMenu();
 }
 
 function joinRoom() {
@@ -1069,32 +1116,36 @@ function joinRoom() {
     
     if (!roomCode) {
         document.getElementById('joinStatus').textContent = '请输入房间码';
+        document.getElementById('joinStatus').classList.add('error');
         return;
     }
     
     document.getElementById('joinStatus').textContent = '正在连接...';
+    document.getElementById('joinStatus').classList.remove('error');
     
     isHost = false;
+    isOnline = true;
+    isPractice = false;
+    isLocalPVP = false;
     
-    peer = new Peer({
-        debug: 1
-    });
+    peer = new Peer({ debug: 0 });
     
     peer.on('open', () => {
-        conn = peer.connect('MECHA-' + roomCode, {
-            reliable: true
-        });
+        conn = peer.connect('MECHA-' + roomCode, { reliable: true });
         
         conn.on('open', () => {
             setupConnection();
             document.getElementById('joinStatus').textContent = '连接成功!';
             setTimeout(() => {
-                conn.send({ type: 'ready' });
+                hideOverlay();
+                remoteSelection = 'flame';
+                remoteMecha = createMecha('flame', false, 250);
+                gameState = 'select';
             }, 500);
         });
         
         conn.on('error', (err) => {
-            document.getElementById('joinStatus').textContent = '连接失败: ' + err;
+            document.getElementById('joinStatus').textContent = '连接失败';
             document.getElementById('joinStatus').classList.add('error');
         });
     });
@@ -1106,91 +1157,30 @@ function joinRoom() {
 }
 
 function setupConnection() {
-    conn.on('data', (data) => {
-        handleNetworkData(data);
-    });
+    conn.on('data', handleNetworkData);
     
     conn.on('close', () => {
         if (gameState === 'battle') {
             alert('对手断开连接');
-            returnToMenu();
+            cleanup();
+            showConnectionOverlay();
         }
-    });
-    
-    conn.on('error', (err) => {
-        console.error('Connection error:', err);
     });
 }
 
 function handleNetworkData(data) {
     if (data.type === 'ready') {
         remoteSelection = 'frost';
-        if (isHost && localSelection) {
-            startBattle();
-        }
+        if (isHost && localSelection) startBattle();
     }
     else if (data.type === 'select') {
         remoteSelection = data.mecha;
-        if (localSelection) {
-            startBattle();
-        }
-    }
-    else if (data.type === 'attack') {
-        if (remoteMecha && localMecha) {
-            remoteMecha.x = data.x;
-            remoteMecha.facing = data.facing;
-            remoteMecha.state = 'attack';
-            remoteMecha.attackTimer = 300;
-            
-            const template = mechas[data.mechaType];
-            const range = template.attackType === 'melee' ? 40 : 80;
-            
-            let dx = localMecha.x - remoteMecha.x;
-            if (data.facing === 'left') dx = remoteMecha.x - localMecha.x;
-            
-            if (dx > 0 && dx < range && Math.abs(localMecha.y - remoteMecha.y) < 20) {
-                let damage = template.damage;
-                if (localMecha.state === 'defend') {
-                    damage = Math.floor(damage * 0.3);
-                    createDefendEffect(localMecha);
-                }
-                
-                applyDamageToLocal(damage, remoteMecha.facing);
-            }
-        }
-    }
-    else if (data.type === 'ultimate') {
-        if (remoteMecha && localMecha) {
-            remoteMecha.x = data.x;
-            remoteMecha.facing = data.facing;
-            remoteMecha.state = 'ultimate';
-            remoteMecha.attackTimer = 500;
-            remoteMecha.energy = 0;
-            screenShake = 15;
-            
-            createUltimateEffect(remoteMecha);
-            
-            const range = 100;
-            let dx = localMecha.x - remoteMecha.x;
-            if (data.facing === 'left') dx = remoteMecha.x - localMecha.x;
-            
-            if (dx > 0 && dx < range && Math.abs(localMecha.y - remoteMecha.y) < 30) {
-                let damage = mechas[data.mechaType].ultimateDamage;
-                if (localMecha.state === 'defend') {
-                    damage = Math.floor(damage * 0.3);
-                    createDefendEffect(localMecha);
-                }
-                
-                applyDamageToLocal(damage, remoteMecha.facing);
-            }
-        }
+        if (localSelection) startBattle();
     }
     else if (data.type === 'damage') {
         if (remoteMecha) {
             remoteMecha.hp = data.targetHp;
-            if (remoteMecha.hp <= 0) {
-                endBattle(true);
-            }
+            if (remoteMecha.hp <= 0) endBattle(true);
         }
     }
     else if (data.type === 'sync') {
@@ -1207,47 +1197,19 @@ function handleNetworkData(data) {
     }
 }
 
-function applyDamageToLocal(damage, attackerFacing) {
-    if (!localMecha || localMecha.invincible) return;
-    
-    localMecha.hp = Math.max(0, localMecha.hp - damage);
-    localMecha.state = 'hit';
-    localMecha.hitTimer = 200;
-    localMecha.invincibleTimer = 300;
-    
-    const knockback = attackerFacing === 'right' ? -8 : 8;
-    localMecha.x += knockback;
-    localMecha.x = Math.max(10, Math.min(LOGICAL_WIDTH - 34, localMecha.x));
-    
-    createHitEffect(localMecha);
-    
-    if (localMecha.hp <= 0) {
-        endBattle(false);
-    }
-}
-
 function cancelRoom() {
-    if (conn) {
-        conn.close();
-        conn = null;
-    }
-    if (peer) {
-        peer.destroy();
-        peer = null;
-    }
+    if (conn) { conn.close(); conn = null; }
+    if (peer) { peer.destroy(); peer = null; }
+    isOnline = false;
     showMultiplayerMenu();
 }
 
 function initTouchControls() {
     const joystick = document.getElementById('joystick');
     const knob = document.getElementById('joystickKnob');
-    const joystickArea = document.getElementById('joystickArea');
+    let joystickTouchId = null;
     
-    const attackBtn = document.getElementById('attackBtn');
-    const defendBtn = document.getElementById('defendBtn');
-    const ultimateBtn = document.getElementById('ultimateBtn');
-    
-    function updateJoystickPosition(touch) {
+    function updateJoystick(touch) {
         const rect = joystick.getBoundingClientRect();
         const centerX = rect.left + rect.width / 2;
         const centerY = rect.top + rect.height / 2;
@@ -1255,7 +1217,7 @@ function initTouchControls() {
         let dx = touch.clientX - centerX;
         let dy = touch.clientY - centerY;
         
-        const maxDist = 35;
+        const maxDist = rect.width / 2 - 10;
         const dist = Math.sqrt(dx * dx + dy * dy);
         
         if (dist > maxDist) {
@@ -1264,28 +1226,24 @@ function initTouchControls() {
         }
         
         knob.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
-        
-        input.direction.x = dx / maxDist;
-        input.direction.y = dy / maxDist;
+        p1Input.direction.x = dx / maxDist;
+        p1Input.direction.y = dy / maxDist;
     }
     
     joystick.addEventListener('touchstart', (e) => {
         e.preventDefault();
         if (joystickTouchId === null) {
             joystickTouchId = e.changedTouches[0].identifier;
-            joystick.style.background = 'rgba(255,255,255,0.3)';
-            updateJoystickPosition(e.changedTouches[0]);
+            updateJoystick(e.changedTouches[0]);
         }
-    });
+    }, { passive: false });
     
     joystick.addEventListener('touchmove', (e) => {
         e.preventDefault();
         for (let touch of e.changedTouches) {
-            if (touch.identifier === joystickTouchId) {
-                updateJoystickPosition(touch);
-            }
+            if (touch.identifier === joystickTouchId) updateJoystick(touch);
         }
-    });
+    }, { passive: false });
     
     joystick.addEventListener('touchend', (e) => {
         e.preventDefault();
@@ -1293,74 +1251,103 @@ function initTouchControls() {
             if (touch.identifier === joystickTouchId) {
                 joystickTouchId = null;
                 knob.style.transform = 'translate(-50%, -50%)';
-                input.direction.x = 0;
-                input.direction.y = 0;
-                joystick.style.background = 'rgba(255,255,255,0.15)';
+                p1Input.direction.x = 0;
+                p1Input.direction.y = 0;
             }
         }
-    });
+    }, { passive: false });
     
-    joystick.addEventListener('touchcancel', (e) => {
-        joystickTouchId = null;
-        knob.style.transform = 'translate(-50%, -50%)';
-        input.direction.x = 0;
-        input.direction.y = 0;
-        joystick.style.background = 'rgba(255,255,255,0.15)';
-    });
-    
-    function addButtonListener(btn, inputKey) {
+    function addButtonListener(btnId, inputKey) {
+        const btn = document.getElementById(btnId);
         btn.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            input[inputKey] = true;
-        });
+            p1Input[inputKey] = true;
+            btn.classList.add('pressed');
+        }, { passive: false });
         btn.addEventListener('touchend', (e) => {
             e.preventDefault();
-            input[inputKey] = false;
-        });
+            p1Input[inputKey] = false;
+            btn.classList.remove('pressed');
+        }, { passive: false });
         btn.addEventListener('touchcancel', (e) => {
             e.preventDefault();
-            input[inputKey] = false;
-        });
+            p1Input[inputKey] = false;
+            btn.classList.remove('pressed');
+        }, { passive: false });
     }
     
-    addButtonListener(attackBtn, 'attack');
-    addButtonListener(defendBtn, 'defend');
-    addButtonListener(ultimateBtn, 'ultimate');
+    addButtonListener('attackBtn', 'attack');
+    addButtonListener('defendBtn', 'defend');
+    addButtonListener('ultimateBtn', 'ultimate');
 }
 
 function initKeyboardControls() {
     document.addEventListener('keydown', (e) => {
+        if (keys[e.code]) return;
         keys[e.code] = true;
         
-        if (e.code === 'KeyW' || e.code === 'ArrowUp') input.direction.y = -1;
-        if (e.code === 'KeyS' || e.code === 'ArrowDown') input.direction.y = 1;
-        if (e.code === 'KeyA' || e.code === 'ArrowLeft') input.direction.x = -1;
-        if (e.code === 'KeyD' || e.code === 'ArrowRight') input.direction.x = 1;
+        if (e.code === 'KeyW') p1Input.direction.y = -1;
+        if (e.code === 'KeyS') p1Input.direction.y = 1;
+        if (e.code === 'KeyA') p1Input.direction.x = -1;
+        if (e.code === 'KeyD') p1Input.direction.x = 1;
         
-        if (e.code === 'KeyJ') input.attack = true;
-        if (e.code === 'KeyK') input.defend = true;
-        if (e.code === 'KeyU') input.ultimate = true;
+        if (e.code === 'KeyJ') p1Input.attack = true;
+        if (e.code === 'KeyK') p1Input.defend = true;
+        if (e.code === 'KeyU') p1Input.ultimate = true;
+        
+        if (isLocalPVP || e.shiftKey) {
+            if (e.code === 'ArrowUp') p2Input.direction.y = -1;
+            if (e.code === 'ArrowDown') p2Input.direction.y = 1;
+            if (e.code === 'ArrowLeft') p2Input.direction.x = -1;
+            if (e.code === 'ArrowRight') p2Input.direction.x = 1;
+            
+            if (e.code === 'Numpad1' || e.code === 'Digit1') p2Input.attack = true;
+            if (e.code === 'Numpad2' || e.code === 'Digit2') p2Input.defend = true;
+            if (e.code === 'Numpad3' || e.code === 'Digit3') p2Input.ultimate = true;
+        }
     });
     
     document.addEventListener('keyup', (e) => {
         keys[e.code] = false;
         
-        if (e.code === 'KeyW' || e.code === 'ArrowUp' || e.code === 'KeyS' || e.code === 'ArrowDown') {
-            input.direction.y = 0;
-        }
-        if (e.code === 'KeyA' || e.code === 'ArrowLeft' || e.code === 'KeyD' || e.code === 'ArrowRight') {
-            input.direction.x = 0;
-        }
+        if (e.code === 'KeyW' && p1Input.direction.y < 0) p1Input.direction.y = 0;
+        if (e.code === 'KeyS' && p1Input.direction.y > 0) p1Input.direction.y = 0;
+        if (e.code === 'KeyA' && p1Input.direction.x < 0) p1Input.direction.x = 0;
+        if (e.code === 'KeyD' && p1Input.direction.x > 0) p1Input.direction.x = 0;
         
-        if (e.code === 'KeyJ') input.attack = false;
-        if (e.code === 'KeyK') input.defend = false;
-        if (e.code === 'KeyU') input.ultimate = false;
+        if (e.code === 'KeyJ') p1Input.attack = false;
+        if (e.code === 'KeyK') p1Input.defend = false;
+        if (e.code === 'KeyU') p1Input.ultimate = false;
+        
+        if (isLocalPVP || keys['ShiftLeft'] || keys['ShiftRight']) {
+            if (e.code === 'ArrowUp') p2Input.direction.y = 0;
+            if (e.code === 'ArrowDown') p2Input.direction.y = 0;
+            if (e.code === 'ArrowLeft') p2Input.direction.x = 0;
+            if (e.code === 'ArrowRight') p2Input.direction.x = 0;
+            
+            if (e.code === 'Numpad1' || e.code === 'Digit1') p2Input.attack = false;
+            if (e.code === 'Numpad2' || e.code === 'Digit2') p2Input.defend = false;
+            if (e.code === 'Numpad3' || e.code === 'Digit3') p2Input.ultimate = false;
+        }
+    });
+}
+
+function updateTouchUI() {
+    const touchControls = document.querySelectorAll('.touchControl');
+    touchControls.forEach(el => {
+        if (isTouchDevice && gameState === 'battle') {
+            el.classList.add('active');
+        } else {
+            el.classList.remove('active');
+        }
     });
 }
 
 window.addEventListener('resize', initCanvas);
 
 window.addEventListener('load', () => {
+    isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
     initCanvas();
     initTouchControls();
     initKeyboardControls();
@@ -1370,12 +1357,18 @@ window.addEventListener('load', () => {
 
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-        input.direction = { x: 0, y: 0 };
-        input.attack = false;
-        input.defend = false;
-        input.ultimate = false;
+        p1Input.direction = { x: 0, y: 0 };
+        p1Input.attack = false;
+        p1Input.defend = false;
+        p1Input.ultimate = false;
+        p2Input.direction = { x: 0, y: 0 };
+        p2Input.attack = false;
+        p2Input.defend = false;
+        p2Input.ultimate = false;
     }
 });
+
+setInterval(updateTouchUI, 100);
 </script>
 </body>
 </html>
