@@ -724,9 +724,9 @@ function drawBee(x, y, bodyOffset, state) {
     drawPixelRect(x + 14, y + 27 + bodyOffset, 3, 4, '#2a2a2a');
     
     if (state === 'attack') {
-        const punchAnim = Math.sin((300 - mechas.flame.attackTimer) / 300 * Math.PI);
-        drawPixelRect(x + 22 + punchAnim * 4, y + 16, 8, 4, '#ffd166');
-        drawPixelRect(x + 24 + punchAnim * 4, y + 14, 4, 8, '#ffaa44');
+        const punchAnim = Math.sin(Date.now() / 100) * 3;
+        drawPixelRect(x + 22 + punchAnim, y + 16, 8, 4, '#ffd166');
+        drawPixelRect(x + 24 + punchAnim, y + 14, 4, 8, '#ffaa44');
     }
     
     if (state === 'defend') {
@@ -740,7 +740,7 @@ function drawBee(x, y, bodyOffset, state) {
 }
 
 function drawElephant(x, y, bodyOffset, state) {
-    const trunkSwing = mechas.frost.attackTimer > 0 ? Math.sin((500 - mechas.frost.attackTimer) / 500 * Math.PI) * 4 : 0;
+    const trunkSwing = Math.sin(Date.now() / 150) * 2;
     
     drawPixelRect(x + 4, y + 10 + bodyOffset, 16, 18, '#8b8b9e');
     
@@ -775,10 +775,10 @@ function drawElephant(x, y, bodyOffset, state) {
     drawPixelRect(x + 15, y + 28 + bodyOffset, 4, 4, '#8b8b9e');
     
     if (state === 'attack') {
-        const laserX = x + 12 + trunkSwing + 8;
-        drawPixelRect(laserX, y + 16, 12, 3, '#4361ee');
-        drawPixelRect(laserX + 8, y + 14, 6, 7, '#748ffc');
-        drawPixelRect(laserX + 12, y + 15, 4, 5, '#ffffff');
+        const laserAnim = Math.sin(Date.now() / 50) * 2;
+        drawPixelRect(x + 24, y + 16 + laserAnim, 16, 3, '#4361ee');
+        drawPixelRect(x + 32, y + 14 + laserAnim, 8, 7, '#748ffc');
+        drawPixelRect(x + 36, y + 15 + laserAnim, 4, 5, '#ffffff');
     }
     
     if (state === 'defend') {
@@ -991,7 +991,7 @@ function gameLoop(timestamp) {
         if (remoteMecha) updateMecha(remoteMecha, dt);
     } else if (gameState === 'battle') {
         if (localMecha) {
-            if (isTouchDevice || isLocalPVP) {
+            if (!isOnline || isLocalPVP) {
                 updateMechaFromInput(localMecha, p1Input, dt);
             }
             updateMecha(localMecha, dt);
