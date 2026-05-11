@@ -673,38 +673,69 @@ function drawMecha(mecha) {
     }
     
     const bodyOffset = mecha.state === 'walk' ? Math.sin(mecha.animFrame * Math.PI / 2) * 2 : 0;
-    
-    drawPixelRect(x + 4, y + 8 + bodyOffset, 16, 20, template.color);
-    drawPixelRect(x + 2, y + 12 + bodyOffset, 4, 12, template.color);
-    drawPixelRect(x + 18, y + 12 + bodyOffset, 4, 12, template.color);
-    
-    drawPixelRect(x + 6, y + bodyOffset, 12, 10, template.secondaryColor);
-    drawPixelRect(x + 7, y + 2 + bodyOffset, 4, 4, '#1a1a2e');
-    drawPixelRect(x + 13, y + 2 + bodyOffset, 4, 4, '#1a1a2e');
-    
-    drawPixelRect(x + 4, y + 26 + bodyOffset, 6, 8, template.color);
-    drawPixelRect(x + 14, y + 26 + bodyOffset, 6, 8, template.color);
-    
-    if (mecha.state === 'attack') {
-        drawPixelRect(x + 22, y + 14, 8, 6, '#ffd166');
-    }
+    const breatheOffset = Math.sin(Date.now() / 500) * 0.5;
     
     if (mecha.state === 'ultimate') {
-        const glowSize = 4 + Math.sin(Date.now() / 50) * 2;
-        ctx.globalAlpha = 0.5;
-        drawPixelRect(x - glowSize, y - glowSize, mecha.width + glowSize * 2, mecha.height + glowSize * 2, template.color);
+        const glowSize = 6 + Math.sin(Date.now() / 30) * 3;
+        ctx.globalAlpha = 0.4 + Math.sin(Date.now() / 50) * 0.2;
+        ctx.fillStyle = template.color;
+        ctx.fillRect((x - glowSize) * SCALE, (y - glowSize) * SCALE, (mecha.width + glowSize * 2) * SCALE, (mecha.height + glowSize * 2) * SCALE);
         ctx.globalAlpha = 1;
     }
     
+    drawPixelRect(x + 4, y + 8 + bodyOffset, 16, 20, template.color);
+    drawPixelRect(x + 3, y + 9 + bodyOffset, 2, 18, template.secondaryColor);
+    drawPixelRect(x + 19, y + 9 + bodyOffset, 2, 18, template.secondaryColor);
+    
+    drawPixelRect(x + 2, y + 12 + bodyOffset, 4, 12, template.color);
+    drawPixelRect(x + 18, y + 12 + bodyOffset, 4, 12, template.color);
+    drawPixelRect(x + 1, y + 14 + bodyOffset, 2, 8, template.secondaryColor);
+    drawPixelRect(x + 21, y + 14 + bodyOffset, 2, 8, template.secondaryColor);
+    
+    drawPixelRect(x + 6, y + bodyOffset + breatheOffset, 12, 10, template.secondaryColor);
+    drawPixelRect(x + 8, y + 1 + bodyOffset + breatheOffset, 3, 3, template.color === '#e63946' ? '#ff8888' : '#88aaff');
+    drawPixelRect(x + 13, y + 1 + bodyOffset + breatheOffset, 3, 3, template.color === '#e63946' ? '#ff8888' : '#88aaff');
+    
+    drawPixelRect(x + 8, y + 2 + bodyOffset + breatheOffset, 2, 2, '#ffffff');
+    drawPixelRect(x + 13, y + 2 + bodyOffset + breatheOffset, 2, 2, '#ffffff');
+    
+    drawPixelRect(x + 7, y + 5 + bodyOffset + breatheOffset, 10, 3, template.color);
+    
+    drawPixelRect(x + 4, y + 26 + bodyOffset, 6, 8, template.color);
+    drawPixelRect(x + 14, y + 26 + bodyOffset, 6, 8, template.color);
+    drawPixelRect(x + 5, y + 27 + bodyOffset, 2, 6, template.secondaryColor);
+    drawPixelRect(x + 17, y + 27 + bodyOffset, 2, 6, template.secondaryColor);
+    
+    if (mecha.state === 'attack') {
+        const punchAnim = Math.sin((300 - mecha.attackTimer) / 300 * Math.PI);
+        drawPixelRect(x + 22 + punchAnim * 4, y + 14, 10, 6, '#ffd166');
+        drawPixelRect(x + 24 + punchAnim * 4, y + 13, 6, 8, '#ffaa44');
+        drawPixelRect(x + 28 + punchAnim * 6, y + 15, 3, 4, '#ffffff');
+    }
+    
     if (mecha.state === 'defend') {
-        drawPixelRect(x + 20, y + 8, 6, 16, '#748ffc');
+        ctx.globalAlpha = 0.7;
+        drawPixelRect(x + 20, y + 6, 8, 20, '#748ffc');
+        drawPixelRect(x + 22, y + 8, 4, 16, '#aabbff');
+        ctx.globalAlpha = 0.5;
+        drawPixelRect(x + 18, y + 4, 12, 24, '#4361ee');
+        ctx.globalAlpha = 1;
+    }
+    
+    if (template.attackType === 'range') {
+        drawPixelRect(x + 3, y + 16 + bodyOffset, 2, 2, '#ffd166');
+        drawPixelRect(x + 19, y + 16 + bodyOffset, 2, 2, '#ffd166');
     }
     
     ctx.restore();
 }
 
 function drawBackground() {
-    drawPixelRect(0, 0, LOGICAL_WIDTH, 150, colors.bg);
+    for (let i = 0; i < LOGICAL_WIDTH; i += 2) {
+        const shade = Math.sin(i * 0.1) * 5;
+        ctx.fillStyle = `rgb(${26 + shade}, ${26 + shade}, ${46 + shade})`;
+        ctx.fillRect(i * SCALE, 0, 2 * SCALE, 150 * SCALE);
+    }
     
     for (let i = 0; i < LOGICAL_WIDTH; i += 20) {
         drawPixelRect(i, 145, 2, 5, '#2d2d44');
@@ -712,13 +743,29 @@ function drawBackground() {
     
     drawPixelRect(0, 150, LOGICAL_WIDTH, 30, colors.ground);
     
-    for (let i = 0; i < LOGICAL_WIDTH; i += 16) {
-        drawPixelRect(i, 150, 12, 4, '#5c5f77');
+    for (let i = -8; i < LOGICAL_WIDTH; i += 16) {
+        const x = Math.max(0, i);
+        drawPixelRect(x, 150, 12, 4, '#5c5f77');
+        drawPixelRect(x + 2, 152, 8, 2, '#6b6f8a');
     }
     
-    for (let i = 40; i < LOGICAL_WIDTH; i += 80) {
-        drawPixelRect(i, 120, 2, 30, '#3d3d5c');
-        drawPixelRect(i - 4, 118, 10, 4, '#3d3d5c');
+    for (let i = 30; i < LOGICAL_WIDTH; i += 80) {
+        drawPixelRect(i, 100, 4, 50, '#3d3d5c');
+        drawPixelRect(i - 6, 96, 16, 6, '#4a4a6a');
+        drawPixelRect(i, 88, 4, 10, '#3d3d5c');
+        drawPixelRect(i - 2, 86, 8, 4, '#4a4a6a');
+        
+        ctx.fillStyle = '#ffd166';
+        ctx.globalAlpha = 0.3 + Math.sin(Date.now() / 1000 + i) * 0.2;
+        ctx.fillRect((i + 1) * SCALE, 89 * SCALE, 2 * SCALE, 3 * SCALE);
+        ctx.globalAlpha = 1;
+    }
+    
+    for (let i = 10; i < LOGICAL_WIDTH; i += 50) {
+        ctx.fillStyle = '#4361ee';
+        ctx.globalAlpha = 0.15 + Math.sin(Date.now() / 800 + i) * 0.1;
+        ctx.fillRect(i * SCALE, 20 * SCALE, 8 * SCALE, 4 * SCALE);
+        ctx.globalAlpha = 1;
     }
 }
 
@@ -813,12 +860,22 @@ function drawSelectScreen() {
 
 function drawMechaPreview(type, x, y) {
     const template = mechas[type];
-    drawPixelRect(x, y, 40, 48, template.color);
-    drawPixelRect(x + 10, y + 10, 20, 24, template.secondaryColor);
-    drawPixelRect(x + 14, y + 14, 6, 6, '#1a1a2e');
-    drawPixelRect(x + 22, y + 14, 6, 6, '#1a1a2e');
-    drawPixelRect(x + 8, y + 32, 10, 12, template.color);
-    drawPixelRect(x + 22, y + 32, 10, 12, template.color);
+    drawPixelRect(x, y + 8, 16, 20, template.color);
+    drawPixelRect(x + 2, y + 12, 4, 12, template.color);
+    drawPixelRect(x + 30, y + 12, 4, 12, template.color);
+    drawPixelRect(x + 6, y, 12, 10, template.secondaryColor);
+    drawPixelRect(x + 8, y + 2, 4, 4, template.color === '#e63946' ? '#ff8888' : '#88aaff');
+    drawPixelRect(x + 14, y + 2, 4, 4, template.color === '#e63946' ? '#ff8888' : '#88aaff');
+    drawPixelRect(x + 8, y + 3, 2, 2, '#ffffff');
+    drawPixelRect(x + 14, y + 3, 2, 2, '#ffffff');
+    drawPixelRect(x + 4, y + 26, 6, 8, template.color);
+    drawPixelRect(x + 26, y + 26, 6, 8, template.color);
+    
+    ctx.fillStyle = colors.text;
+    ctx.font = `${6 * SCALE}px monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText(mechas[type].name, (x + 20) * SCALE, (y - 4) * SCALE);
+    ctx.textAlign = 'left';
 }
 
 function drawResult(won) {
