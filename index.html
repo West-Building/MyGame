@@ -336,22 +336,22 @@ const colors = {
 
 const mechas = {
     flame: {
-        name: '烈焰',
-        color: '#e63946',
-        secondaryColor: '#ff6b6b',
+        name: '小蜜蜂',
+        color: '#f4a261',
+        secondaryColor: '#2a2a2a',
         attackType: 'melee',
         damage: 15,
         ultimateDamage: 35,
-        speed: 2
+        speed: 2.5
     },
     frost: {
-        name: '寒霜',
-        color: '#4361ee',
-        secondaryColor: '#748ffc',
+        name: '大象',
+        color: '#8b8b9e',
+        secondaryColor: '#6b6b7e',
         attackType: 'range',
         damage: 12,
         ultimateDamage: 30,
-        speed: 2.5
+        speed: 1.8
     }
 };
 
@@ -673,7 +673,6 @@ function drawMecha(mecha) {
     }
     
     const bodyOffset = mecha.state === 'walk' ? Math.sin(mecha.animFrame * Math.PI / 2) * 2 : 0;
-    const breatheOffset = Math.sin(Date.now() / 500) * 0.5;
     
     if (mecha.state === 'ultimate') {
         const glowSize = 6 + Math.sin(Date.now() / 30) * 3;
@@ -683,37 +682,106 @@ function drawMecha(mecha) {
         ctx.globalAlpha = 1;
     }
     
-    drawPixelRect(x + 4, y + 8 + bodyOffset, 16, 20, template.color);
-    drawPixelRect(x + 3, y + 9 + bodyOffset, 2, 18, template.secondaryColor);
-    drawPixelRect(x + 19, y + 9 + bodyOffset, 2, 18, template.secondaryColor);
-    
-    drawPixelRect(x + 2, y + 12 + bodyOffset, 4, 12, template.color);
-    drawPixelRect(x + 18, y + 12 + bodyOffset, 4, 12, template.color);
-    drawPixelRect(x + 1, y + 14 + bodyOffset, 2, 8, template.secondaryColor);
-    drawPixelRect(x + 21, y + 14 + bodyOffset, 2, 8, template.secondaryColor);
-    
-    drawPixelRect(x + 6, y + bodyOffset + breatheOffset, 12, 10, template.secondaryColor);
-    drawPixelRect(x + 8, y + 1 + bodyOffset + breatheOffset, 3, 3, template.color === '#e63946' ? '#ff8888' : '#88aaff');
-    drawPixelRect(x + 13, y + 1 + bodyOffset + breatheOffset, 3, 3, template.color === '#e63946' ? '#ff8888' : '#88aaff');
-    
-    drawPixelRect(x + 8, y + 2 + bodyOffset + breatheOffset, 2, 2, '#ffffff');
-    drawPixelRect(x + 13, y + 2 + bodyOffset + breatheOffset, 2, 2, '#ffffff');
-    
-    drawPixelRect(x + 7, y + 5 + bodyOffset + breatheOffset, 10, 3, template.color);
-    
-    drawPixelRect(x + 4, y + 26 + bodyOffset, 6, 8, template.color);
-    drawPixelRect(x + 14, y + 26 + bodyOffset, 6, 8, template.color);
-    drawPixelRect(x + 5, y + 27 + bodyOffset, 2, 6, template.secondaryColor);
-    drawPixelRect(x + 17, y + 27 + bodyOffset, 2, 6, template.secondaryColor);
-    
-    if (mecha.state === 'attack') {
-        const punchAnim = Math.sin((300 - mecha.attackTimer) / 300 * Math.PI);
-        drawPixelRect(x + 22 + punchAnim * 4, y + 14, 10, 6, '#ffd166');
-        drawPixelRect(x + 24 + punchAnim * 4, y + 13, 6, 8, '#ffaa44');
-        drawPixelRect(x + 28 + punchAnim * 6, y + 15, 3, 4, '#ffffff');
+    if (template.name === '小蜜蜂') {
+        drawBee(x, y, bodyOffset, mecha.state);
+    } else {
+        drawElephant(x, y, bodyOffset, mecha.state);
     }
     
-    if (mecha.state === 'defend') {
+    ctx.restore();
+}
+
+function drawBee(x, y, bodyOffset, state) {
+    const wingFlap = Math.sin(Date.now() / 80) * 1;
+    
+    drawPixelRect(x + 6, y + 8 + bodyOffset, 12, 18, '#f4a261');
+    drawPixelRect(x + 6, y + 14 + bodyOffset, 12, 4, '#2a2a2a');
+    drawPixelRect(x + 6, y + 20 + bodyOffset, 12, 4, '#2a2a2a');
+    
+    drawPixelRect(x + 2, y + 14 + bodyOffset, 4, 6, '#2a2a2a');
+    drawPixelRect(x + 18, y + 14 + bodyOffset, 4, 6, '#2a2a2a');
+    drawPixelRect(x + 2, y + 20 + bodyOffset, 4, 6, '#f4a261');
+    drawPixelRect(x + 18, y + 20 + bodyOffset, 4, 6, '#f4a261');
+    
+    drawPixelRect(x + 7, y + bodyOffset, 10, 8, '#2a2a2a');
+    drawPixelRect(x + 10, y + 2 + bodyOffset, 2, 2, '#ffffff');
+    drawPixelRect(x + 14, y + 2 + bodyOffset, 2, 2, '#ffffff');
+    drawPixelRect(x + 9, y + 4 + bodyOffset, 4, 2, '#ffd166');
+    
+    drawPixelRect(x + 9, y - 2 + bodyOffset, 2, 4, '#2a2a2a');
+    drawPixelRect(x + 13, y - 2 + bodyOffset, 2, 4, '#2a2a2a');
+    drawPixelRect(x + 9, y - 4 + bodyOffset, 2, 2, '#ffd166');
+    drawPixelRect(x + 13, y - 4 + bodyOffset, 2, 2, '#ffd166');
+    
+    ctx.globalAlpha = 0.6;
+    drawPixelRect(x + 1, y + 12 + bodyOffset + wingFlap, 6, 4, '#aaccff');
+    drawPixelRect(x + 17, y + 12 + bodyOffset + wingFlap, 6, 4, '#aaccff');
+    ctx.globalAlpha = 1;
+    
+    drawPixelRect(x + 6, y + 26 + bodyOffset, 5, 6, '#f4a261');
+    drawPixelRect(x + 13, y + 26 + bodyOffset, 5, 6, '#f4a261');
+    drawPixelRect(x + 7, y + 27 + bodyOffset, 3, 4, '#2a2a2a');
+    drawPixelRect(x + 14, y + 27 + bodyOffset, 3, 4, '#2a2a2a');
+    
+    if (state === 'attack') {
+        const punchAnim = Math.sin((300 - mechas.flame.attackTimer) / 300 * Math.PI);
+        drawPixelRect(x + 22 + punchAnim * 4, y + 16, 8, 4, '#ffd166');
+        drawPixelRect(x + 24 + punchAnim * 4, y + 14, 4, 8, '#ffaa44');
+    }
+    
+    if (state === 'defend') {
+        ctx.globalAlpha = 0.7;
+        drawPixelRect(x + 20, y + 6, 8, 20, '#ffd166');
+        drawPixelRect(x + 22, y + 8, 4, 16, '#ffdd88');
+        ctx.globalAlpha = 0.5;
+        drawPixelRect(x + 18, y + 4, 12, 24, '#f4a261');
+        ctx.globalAlpha = 1;
+    }
+}
+
+function drawElephant(x, y, bodyOffset, state) {
+    const trunkSwing = mechas.frost.attackTimer > 0 ? Math.sin((500 - mechas.frost.attackTimer) / 500 * Math.PI) * 4 : 0;
+    
+    drawPixelRect(x + 4, y + 10 + bodyOffset, 16, 18, '#8b8b9e');
+    
+    drawPixelRect(x + 2, y + 12 + bodyOffset, 6, 12, '#6b6b7e');
+    drawPixelRect(x + 16, y + 12 + bodyOffset, 6, 12, '#6b6b7e');
+    
+    drawPixelRect(x + 2, y + 14 + bodyOffset, 2, 8, '#8b8b9e');
+    drawPixelRect(x + 20, y + 14 + bodyOffset, 2, 8, '#8b8b9e');
+    
+    drawPixelRect(x + 6, y + bodyOffset, 12, 10, '#8b8b9e');
+    
+    drawPixelRect(x + 10, y + 2 + bodyOffset, 3, 3, '#333333');
+    drawPixelRect(x + 13, y + 2 + bodyOffset, 3, 3, '#333333');
+    drawPixelRect(x + 11, y + 3 + bodyOffset, 2, 2, '#ffffff');
+    drawPixelRect(x + 14, y + 3 + bodyOffset, 2, 2, '#ffffff');
+    
+    drawPixelRect(x + 8, y + 6 + bodyOffset, 2, 2, '#ffaa88');
+    drawPixelRect(x + 14, y + 6 + bodyOffset, 2, 2, '#ffaa88');
+    
+    drawPixelRect(x + 2, y + 6 + bodyOffset, 4, 8, '#6b6b7e');
+    drawPixelRect(x + 18, y + 6 + bodyOffset, 4, 8, '#6b6b7e');
+    
+    drawPixelRect(x + 6, y + 8 + bodyOffset, 2, 8, '#ffffff');
+    drawPixelRect(x + 16, y + 8 + bodyOffset, 2, 8, '#ffffff');
+    
+    drawPixelRect(x + 10, y + 10 + bodyOffset + trunkSwing, 4, 12, '#8b8b9e');
+    drawPixelRect(x + 10, y + 20 + bodyOffset + trunkSwing, 4, 4, '#9a9aaa');
+    
+    drawPixelRect(x + 4, y + 26 + bodyOffset, 6, 8, '#6b6b7e');
+    drawPixelRect(x + 14, y + 26 + bodyOffset, 6, 8, '#6b6b7e');
+    drawPixelRect(x + 5, y + 28 + bodyOffset, 4, 4, '#8b8b9e');
+    drawPixelRect(x + 15, y + 28 + bodyOffset, 4, 4, '#8b8b9e');
+    
+    if (state === 'attack') {
+        const laserX = x + 12 + trunkSwing + 8;
+        drawPixelRect(laserX, y + 16, 12, 3, '#4361ee');
+        drawPixelRect(laserX + 8, y + 14, 6, 7, '#748ffc');
+        drawPixelRect(laserX + 12, y + 15, 4, 5, '#ffffff');
+    }
+    
+    if (state === 'defend') {
         ctx.globalAlpha = 0.7;
         drawPixelRect(x + 20, y + 6, 8, 20, '#748ffc');
         drawPixelRect(x + 22, y + 8, 4, 16, '#aabbff');
@@ -721,13 +789,6 @@ function drawMecha(mecha) {
         drawPixelRect(x + 18, y + 4, 12, 24, '#4361ee');
         ctx.globalAlpha = 1;
     }
-    
-    if (template.attackType === 'range') {
-        drawPixelRect(x + 3, y + 16 + bodyOffset, 2, 2, '#ffd166');
-        drawPixelRect(x + 19, y + 16 + bodyOffset, 2, 2, '#ffd166');
-    }
-    
-    ctx.restore();
 }
 
 function drawBackground() {
@@ -852,24 +913,42 @@ function drawSelectScreen() {
     
     ctx.fillStyle = '#888';
     ctx.font = `${5 * SCALE}px monospace`;
-    ctx.fillText('近战·高伤害', 105 * SCALE, 132 * SCALE);
-    ctx.fillText('远程·灵活', 195 * SCALE, 132 * SCALE);
+    ctx.fillText('近战·敏捷', 105 * SCALE, 132 * SCALE);
+    ctx.fillText('远程·稳重', 195 * SCALE, 132 * SCALE);
     
     ctx.textAlign = 'left';
 }
 
 function drawMechaPreview(type, x, y) {
-    const template = mechas[type];
-    drawPixelRect(x, y + 8, 16, 20, template.color);
-    drawPixelRect(x + 2, y + 12, 4, 12, template.color);
-    drawPixelRect(x + 30, y + 12, 4, 12, template.color);
-    drawPixelRect(x + 6, y, 12, 10, template.secondaryColor);
-    drawPixelRect(x + 8, y + 2, 4, 4, template.color === '#e63946' ? '#ff8888' : '#88aaff');
-    drawPixelRect(x + 14, y + 2, 4, 4, template.color === '#e63946' ? '#ff8888' : '#88aaff');
-    drawPixelRect(x + 8, y + 3, 2, 2, '#ffffff');
-    drawPixelRect(x + 14, y + 3, 2, 2, '#ffffff');
-    drawPixelRect(x + 4, y + 26, 6, 8, template.color);
-    drawPixelRect(x + 26, y + 26, 6, 8, template.color);
+    if (type === 'flame') {
+        drawPixelRect(x + 6, y + 8, 12, 18, '#f4a261');
+        drawPixelRect(x + 6, y + 14, 12, 4, '#2a2a2a');
+        drawPixelRect(x + 2, y + 14, 4, 6, '#2a2a2a');
+        drawPixelRect(x + 18, y + 14, 4, 6, '#2a2a2a');
+        drawPixelRect(x + 7, y, 10, 8, '#2a2a2a');
+        drawPixelRect(x + 10, y + 2, 2, 2, '#ffffff');
+        drawPixelRect(x + 14, y + 2, 2, '#ffffff');
+        drawPixelRect(x + 9, y - 2, 2, 4, '#2a2a2a');
+        drawPixelRect(x + 13, y - 2, 2, 4, '#2a2a2a');
+        drawPixelRect(x + 6, y + 26, 5, 6, '#f4a261');
+        drawPixelRect(x + 13, y + 26, 5, 6, '#f4a261');
+    } else {
+        drawPixelRect(x + 4, y + 10, 16, 18, '#8b8b9e');
+        drawPixelRect(x + 2, y + 12, 6, 12, '#6b6b7e');
+        drawPixelRect(x + 30, y + 12, 6, 12, '#6b6b7e');
+        drawPixelRect(x + 6, y, 12, 10, '#8b8b9e');
+        drawPixelRect(x + 10, y + 2, 3, 3, '#333333');
+        drawPixelRect(x + 13, y + 2, 3, 3, '#333333');
+        drawPixelRect(x + 11, y + 3, 2, 2, '#ffffff');
+        drawPixelRect(x + 14, y + 3, 2, 2, '#ffffff');
+        drawPixelRect(x + 2, y + 6, 4, 8, '#6b6b7e');
+        drawPixelRect(x + 30, y + 6, 4, 8, '#6b6b7e');
+        drawPixelRect(x + 6, y + 8, 2, 8, '#ffffff');
+        drawPixelRect(x + 26, y + 8, 2, 8, '#ffffff');
+        drawPixelRect(x + 10, y + 10, 4, 12, '#8b8b9e');
+        drawPixelRect(x + 4, y + 26, 6, 8, '#6b6b7e');
+        drawPixelRect(x + 26, y + 26, 6, 8, '#6b6b7e');
+    }
     
     ctx.fillStyle = colors.text;
     ctx.font = `${6 * SCALE}px monospace`;
